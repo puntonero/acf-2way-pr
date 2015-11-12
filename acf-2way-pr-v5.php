@@ -139,7 +139,20 @@ class acf_field_prbd extends acf_field_relationship {
 				$existing_value = get_field( $field['key'], $value_remove );
 
 				if ( ! empty( $existing_value ) ) {
-					$existing_value = array_diff( $existing_value, array( $post_id ) );
+
+					if ( $existing_value[0] instanceof WP_Post ) {
+						$old_existing_value = $existing_value;
+						$existing_value = array();
+						foreach ( $old_existing_value as $post ) {
+							if ( $post->ID !== $post_id ) {
+								$existing_value[] = $post;
+							}
+						}
+					} 
+					 else {
+						$existing_value = array_diff( $existing_val, array( $post_id ) );
+					}
+
 					update_field( $field['key'], $existing_value, $value_remove );
 				}
 
